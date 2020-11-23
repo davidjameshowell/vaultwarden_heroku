@@ -18,6 +18,6 @@ Additionally, since this is DB backed, you can take backups (as JawsDB allows ou
 
 # Notes to consider
 
-Your Bitwarden instance will go to sleep after 30 seconds of no activity. This should not be too bad of an issue due to the fact that you can maintain a local copy. However if you are adding, you may wish to have a cron job which polls your instance to keep it avaliable. 
+Your Bitwarden instance will go to sleep after 30 minutes of no activity. This should not be too bad of an issue due to the fact that you can maintain a local copy. However if you are adding, you may wish to have a cron job which polls your instance to keep it avaliable (read: Pingdom set to 15 minute intervals or any website status checker).
 
 The JawsDB instance comes with 5MB of storage space. I found this sufficient enough for my own personal backups even with 700+ entries, two orgs, and 4 members. You may find if you are attaching content, that you might exceed this but I suggest attach files in base64 encoded content to preserve portability.
