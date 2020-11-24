@@ -12,7 +12,7 @@ The script in this repo is a quick and dirty implementation in order to get you 
 
 This script will make sure you have Heroku, are logged into Heroku, and also have the required tools (jq, heroku, Docker, openssl). Docker is required as we need to rebuild the image with a modified start.sh for the ROCKET_PORT. This will create the app (with a random name), add required addon Dynos, create the Docker image, deploy, and make sure the required essentials (ADMIN_TOKEN, DATABASE_URL) are in the environmental vars. 
 
-Afterwards, you can login to your Heroku account and find your app and oepn the App URL to the new instance. 
+Afterwards, you can login to your Heroku account and find your app and open the App URL to the new instance. 
 
 Additionally, since this is DB backed, you can take backups (as JawsDB allows outside connections).
 

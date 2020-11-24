@@ -1,10 +1,14 @@
 #!/bin/bash 
+set -euo pipefail
+
+# Remove any paths if currently present for clean workdir.
 rm -rf ./bitwarden_rs
 rm -rf ./scripts-common
+rm -rf ./.git
 
 git init
 
-repo_folder="bitwarden_rs"
+REPO_FOLDER="bitwarden_rs"
 
 echo "Clone scripts-common for utilities; init and update."
 git submodule add -b stable https://gitlab.com/bertrand-benoit/scripts-common.git
@@ -19,7 +23,7 @@ scriptsCommonUtilities="$currentDir/scripts-common/utilities.sh"
 echo "Clone current bitwarden_rs with depth 1"
 git clone --depth 1 https://github.com/dani-garcia/bitwarden_rs.git
 
-checkPath "$repo_folder" || errorMessage "Path '$repo_folder' should exist. Check if the git clone functioning."
+checkPath "$REPO_FOLDER" || errorMessage "Path '$REPO_FOLDER' should exist. Check if the git clone functioning."
 checkBin heroku || errorMessage "This tool requires heroku CLI to be installed. Install it please, and then run this tool again after cleaning the folder."
 checkBin jq || errorMessage "This tool requires jq to be installed. Install it please, and then run this tool again after cleaning the folder."
 checkBin openssl || errorMessage "This tool requires openssl to be installed. Install it please, and then run this tool again after cleaning the folder."
@@ -57,6 +61,7 @@ echo "And set DB connections to five in order not to saturate the free DB"
 heroku config:set DATABASE_MAX_CONNS=5 -a $APP_NAME
 
 echo "Now we will build the amd64 image to deploy to Heroku with the specified port changes"
+mv ./${REPO_FOLDER}/docker/amd64/Dockerfile ./${REPO_FOLDER}/Dockerfile
 cd ./bitwarden_rs
 heroku container:push web -a $APP_NAME
 
