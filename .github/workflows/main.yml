@@ -15,7 +15,7 @@ env:
 jobs:
   create_and_deploy_app:
     name: Create Bitwarden_rs app on Heroku, build, and deploy.
-    if: ${{ github.ref == "/ref/heads/deploy"}}
+    if: github.ref == "/ref/heads/deploy"
     runs-on: ubuntu-latest
     steps:
     - uses: docker-practice/actions-setup-docker@master
@@ -31,7 +31,7 @@ jobs:
     - run: bash create_bitwarden_app.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -t deploy
   update_and_deploy:
     name: Update Bitwarden_rs app (to latest version or SHA) on Heroku and deploy.
-    if: ${{ github.ref == "/ref/heads/main"}}
+    if: github.ref == "/ref/heads/main"
     runs-on: ubuntu-latest
     steps:
     - uses: docker-practice/actions-setup-docker@master
