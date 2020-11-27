@@ -8,11 +8,13 @@ As my Bitwarden instance is a critical part of my daily workflow and part of acc
 
 ## The script
 
-The script in this repo is a quick and dirty implementation in order to get you started. It will make sure you have the required tooling to complete the process - if at any time you encounter an error, you will need to restart from scratch unfortuantely. This will be improved but is a first iterative step to get the script out there.
+The script has heavily been reworked to utilize Github actions as a way of building and deploying, as well as updating the Bitwarden instance to latest version. Actions will go through the entire process with the settings you want and tweaks in order to Deploy out to Heroku without any extra resources on your end.
 
-This script will make sure you have Heroku, are logged into Heroku, and also have the required tools (jq, heroku, Docker, openssl). Docker is required as we need to rebuild the image with a modified start.sh for the ROCKET_PORT. This will create the app (with a random name), add required addon Dynos, create the Docker image, deploy, and make sure the required essentials (ADMIN_TOKEN, DATABASE_URL) are in the environmental vars. 
+Please find in the .github/workflows/main.yml settings to set such as your Heroku application name, enable Duo global mode, and if you want to specifiy a specific Github has to use from bitwarden_rs to build from.
 
-Afterwards, you can login to your Heroku account and find your app and open the App URL to the new instance. 
+Please fork this repo and configure "HEROKU_APP_NAME", "HEROKU_EMAIL", and "HEROKU_API_KEY" in the Settings->Secrets tab. Once done, create a new deploy branch and push to deploy the application out. Afterwards, you can run updates manually via the main branch which will rebuild the container with the assigned settings, push, and release as a new version to Heroku.
+
+After initial deployment, you can login to your Heroku account and find your app and open the App URL to the new instance. 
 
 Additionally, since this is DB backed, you can take backups (as JawsDB allows outside connections).
 
