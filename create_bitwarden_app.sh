@@ -9,6 +9,7 @@ ENABLE_DUO=0
 CREATE_APP_NAME=" "
 GIT_HASH="master"
 BITWARDEN_RS_FOLDER="bitwarden_rs"
+STRATEGY_TYPE="deploy"
 
 function git_clone {
     git_hash=$1
@@ -63,12 +64,13 @@ function build_image {
     heroku container:release web -a $APP_NAME
 }
 
-while getopts d:a:g: flag
+while getopts d:a:g:t: flag
 do
     case "${flag}" in
         d) ENABLE_DUO=${OPTARG};;
         a) CREATE_APP_NAME=${OPTARG};;
         g) GIT_HASH=${OPTARG};;
+        t) STRATEGY_TYPE=${OPTARG};;
     esac
 done
 echo "Enable Duo: $ENABLE_DUO";
@@ -98,8 +100,11 @@ machine git.heroku.com
     password ${HEROKU_API_KEY}
 EOF
 
-echo "Run Heroku bootstrapping for app and Dyno creations."
-heroku_bootstrap $CREATE_APP_NAME
+if [[ ${STRATEGY_TYPE} = "deploy" ]]
+then
+    echo "Run Heroku bootstrapping for app and Dyno creations."
+    heroku_bootstrap $CREATE_APP_NAME
+fi
 
 build_image
 echo "Congrats! Your new Bitwarden instance is ready to use! Head to Heroku, find the app, and use Open App to register!"

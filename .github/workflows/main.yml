@@ -1,19 +1,21 @@
-name: BuildAndDeployApp
+name: BitwardenRSOnHerokuAIO
 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ deploy ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ deploy, main ]
   workflow_dispatch:
 
 env:
-  CREATE_APP_NAME: my-first-app-name-12345
+  CREATE_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
   DUO_ENABLE: 0
   GIT_HASH: master
+  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
 jobs:
   create_and_deploy_app:
+    name: Create Bitwarden_rs app on Heroku, build, and deploy.
+    if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
     steps:
     - uses: docker-practice/actions-setup-docker@master
@@ -22,8 +24,23 @@ jobs:
         # this value please see https://github.com/AkihiroSuda/moby-snapshot/releases
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 2
+        fetch-depth: 1
+    - run: curl https://cli-assets.heroku.com/install.sh | sh
+    - run: sudo apt update && sudo apt install jq openssl -y
+    - run: bash create_bitwarden_app.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -t deploy
+  update_and_deploy:
+    name: Update Bitwarden_rs app (to latest version or SHA) on Heroku and deploy.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: docker-practice/actions-setup-docker@master
+      with:
+        docker_channel: stable
+        # this value please see https://github.com/AkihiroSuda/moby-snapshot/releases
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
     - run: git checkout HEAD^
     - run: curl https://cli-assets.heroku.com/install.sh | sh
     - run: sudo apt update && sudo apt install jq openssl -y
-    - run: bash create_bitwarden_app.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH
+    - run: bash create_bitwarden_app.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -t update
