@@ -7,8 +7,8 @@ on:
 
 env:
   CREATE_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-  DUO_ENABLE: 0
-  GIT_HASH: master
+  DUO_ENABLE: ${{ secrets.DUO_ENABLE }}
+  GIT_HASH: ${{ secrets.GIT_HASH }}
   HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
