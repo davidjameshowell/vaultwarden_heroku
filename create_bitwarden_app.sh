@@ -50,6 +50,9 @@ function heroku_bootstrap {
 }
 
 function build_image {
+    echo "Logging into Heroku Container Registry to push the image (this will add an entry in your Docker config)"
+    heroku container:login
+
     echo "Now we will build the amd64 image to deploy to Heroku with the specified port changes"
     mv ./${BITWARDEN_RS_FOLDER}/docker/amd64/Dockerfile ./${BITWARDEN_RS_FOLDER}/Dockerfile
     cd ./${BITWARDEN_RS_FOLDER}
