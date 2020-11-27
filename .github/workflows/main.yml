@@ -3,7 +3,7 @@ name: BuildAndDeployApp
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ deploy ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,5 +25,5 @@ jobs:
         fetch-depth: 2
     - run: git checkout HEAD^
     - run: curl https://cli-assets.heroku.com/install.sh | sh
-    - run: apt update && apt install jq openssl -y
+    - run: sudo apt update && sudo apt install jq openssl -y
     - run: bash create_bitwarden_app.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH
