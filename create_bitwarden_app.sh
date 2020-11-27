@@ -31,13 +31,8 @@ function heroku_bootstrap {
     echo "Logging into Heroku Container Registry to push the image (this will add an entry in your Docker config)"
     heroku container:login
 
-    echo "We must create a Heroku application to deploy to first. If an app name was specified, use it now."
-    if [ -z $CREATE_APP_NAME ]
-    then
-        APP_NAME=$(heroku create --json | jq --raw-output '.name')
-    else
-        APP_NAME=$(heroku create ${CREATE_APP_NAME} --json | jq --raw-output '.name')
-    fi
+    echo "We must create a Heroku application to deploy to first."
+    APP_NAME=$(heroku create ${CREATE_APP_NAME} --json | jq --raw-output '.name')
 
     echo "We will use JawsDB Maria edition, which is free and sufficient for a small instance"
     heroku addons:create jawsdb -a $APP_NAME
@@ -104,6 +99,8 @@ if [[ ${STRATEGY_TYPE} = "deploy" ]]
 then
     echo "Run Heroku bootstrapping for app and Dyno creations."
     heroku_bootstrap $CREATE_APP_NAME
+else
+    APP_NAME=$CREATE_APP_NAME
 fi
 
 build_image
