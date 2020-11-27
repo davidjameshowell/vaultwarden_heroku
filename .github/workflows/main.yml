@@ -12,6 +12,9 @@ env:
   CREATE_APP_NAME: my-first-app-name-12345
   DUO_ENABLE: 0
   GIT_HASH: master
+  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
 jobs:
   create_and_deploy_app:
     runs-on: ubuntu-latest
