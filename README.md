@@ -1,22 +1,44 @@
-# bitwarden_rs_heroku
-Bitwarden_rs self hosted in Heroku for Free!
+# Bitwarden_rs on Heroku for Free!
+Deploy Bitwarden_rs in Heroku for free via Github1
 
-## Preface
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/bitwarden_rs_heroku/BitwardenRSOnHerokuAIO/deploy?label=Deploy%20Bitwarden_RS&style=for-the-badge)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/bitwarden_rs_heroku/BitwardenRSOnHerokuAIO/main?label=Update%20Bitwarden_RS&style=for-the-badge)
+
+## Features
+* Build and deploy cutomized Bitwarden_rs image from source to Heroku via Github actions
+* Add global Duo Security enablement for replica deployment as needed
+* Maintanable updates with Git Hash for future updates
+* Easily extendable for future tweaks
+
+## Usage
+
+Usage is simply, fast, and user friendly!
+
+### Deployment
+
+1. Create a fork of this project
+2. Create a new `deploy` branch with current forked contents of `main` branch.
+3. Edit the `.github/workflows/main.yml` to enable/disable Duo and/or modify the checkout hash of bitwarden_rs upstream.
+4. Go to your forked repo Settings > Secrets and add secrets for:
+  * HEROKU_EMAIL (the email you used to sign up for Heroku)
+  * HEROKU_API_KEY (yoru Heroku API key - can be found in **[Account Setings](https://dashboard.heroku.com/account)** -> APi Keys)
+  * HEROKU_APP_NAME (the name of the Heroku application, this must be unqiue across Heroku and will fail if it is not)
+5. Commit and push your deploy branch back to your forked repo.
+6. Github Actions will run the job and begin deploying the app. This will take around 15 minutes.
+7. Congrats, you now having a fully functional Bitwarden_rs instance in Heroku!
+ 
+ ### Update
+ 
+ Updating is simple and can be done one of two ways:
+ * Running the workflow manually via Github Actions
+ * Making a commit to the main branch, forcing a Github Actions workflow to initiate
+ 
+Either one of these will force the Github Actions workflow to run and update the app. If you need to modify to enable/disable settings, you shoudl re run it as well.
+
+## Why this was started
 In **[this issues request](https://github.com/dani-garcia/bitwarden_rs/issues/954)**, someone had inquired if it was possible to install Bitwarden_rs in Heroku. Unfortunately the dev team had not done this before and someone had tried but was unsccessful (due to port binding issues).
 
 As my Bitwarden instance is a critical part of my daily workflow and part of acceptance from users in my group whom I need to share passwords with, high availability services are also an important part. I run a replica of Bitwarden on a cheap cloud server where I also take backups as well to S3, but seeing Heroku have a generous free tier, I was inclined to try this out!
-
-## The script
-
-The script has heavily been reworked to utilize Github actions as a way of building and deploying, as well as updating the Bitwarden instance to latest version. Actions will go through the entire process with the settings you want and tweaks in order to Deploy out to Heroku without any extra resources on your end.
-
-Please find in the .github/workflows/main.yml settings to set such as your Heroku application name, enable Duo global mode, and if you want to specifiy a specific Github has to use from bitwarden_rs to build from.
-
-Please fork this repo and configure "HEROKU_APP_NAME", "HEROKU_EMAIL", and "HEROKU_API_KEY" in the Settings->Secrets tab. Once done, create a new deploy branch and push to deploy the application out. Afterwards, you can run updates manually via the main branch which will rebuild the container with the assigned settings, push, and release as a new version to Heroku.
-
-After initial deployment, you can login to your Heroku account and find your app and open the App URL to the new instance. 
-
-Additionally, since this is DB backed, you can take backups (as JawsDB allows outside connections).
 
 # Notes to consider
 

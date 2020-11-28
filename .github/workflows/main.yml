@@ -7,8 +7,8 @@ on:
 
 env:
   CREATE_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-  DUO_ENABLE: ${{ secrets.DUO_ENABLE }}
-  GIT_HASH: ${{ secrets.GIT_HASH }}
+  DUO_ENABLE: 1
+  GIT_HASH: master
   HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
@@ -27,7 +27,7 @@ jobs:
         fetch-depth: 1
     - run: curl https://cli-assets.heroku.com/install.sh | sh
     - run: sudo apt update && sudo apt install jq openssl -y
-    - run: bash create_bitwarden_app.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -t deploy
+    - run: bash bitwarden_rs_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -t deploy
   update_and_deploy:
     name: Update Bitwarden_rs app (to latest version or SHA) on Heroku and deploy.
     if: github.ref == 'refs/heads/main'
@@ -42,4 +42,4 @@ jobs:
         fetch-depth: 1
     - run: curl https://cli-assets.heroku.com/install.sh | sh
     - run: sudo apt update && sudo apt install jq openssl -y
-    - run: bash create_bitwarden_app.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -t update
+    - run: bash bitwarden_rs_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -t update

@@ -12,11 +12,11 @@ BITWARDEN_RS_FOLDER="bitwarden_rs"
 STRATEGY_TYPE="deploy"
 
 function git_clone {
-    git_hash=$1
+    GIT_HASH=$1
     echo "Clone current bitwarden_rs with depth 1"
     git clone --depth 1 https://github.com/dani-garcia/bitwarden_rs.git
     cd ./${BITWARDEN_RS_FOLDER}
-    git checkout ${GIT_HASH}
+    git checkout "${GIT_HASH}"
     cd ..
 }
 
@@ -32,21 +32,21 @@ function heroku_bootstrap {
     heroku container:login
 
     echo "We must create a Heroku application to deploy to first."
-    APP_NAME=$(heroku create ${CREATE_APP_NAME} --json | jq --raw-output '.name')
+    APP_NAME=$(heroku create "${CREATE_APP_NAME}" --json | jq --raw-output '.name')
 
     echo "We will use JawsDB Maria edition, which is free and sufficient for a small instance"
-    heroku addons:create jawsdb -a $APP_NAME
+    heroku addons:create jawsdb -a "$APP_NAME"
 
     echo "Now we use the JAWS DB config as the database URL for Bitwarden"
     echo "Supressing output due to sensitive nature."
-    heroku config:set DATABASE_URL=$(heroku config:get JAWSDB_URL -a $APP_NAME) -a $APP_NAME > /dev/null
+    heroku config:set DATABASE_URL="$(heroku config:get JAWSDB_URL -a "${APP_NAME}")" -a "${APP_NAME}" > /dev/null
 
     echo "Additionally set an Admin Token too in the event additional options are needed."
     echo "Supressing output due to sensitive nature."
-    heroku config:set ADMIN_TOKEN=$(openssl rand -base64 48) -a $APP_NAME > /dev/null
+    heroku config:set ADMIN_TOKEN="$(openssl rand -base64 48)" -a "${APP_NAME}" > /dev/null
 
     echo "And set DB connections to seven in order not to saturate the free DB"
-    heroku config:set DATABASE_MAX_CONNS=7 -a $APP_NAME
+    heroku config:set DATABASE_MAX_CONNS=7 -a "${APP_NAME}"
 }
 
 function build_image {
@@ -56,10 +56,14 @@ function build_image {
     echo "Now we will build the amd64 image to deploy to Heroku with the specified port changes"
     mv ./${BITWARDEN_RS_FOLDER}/docker/amd64/Dockerfile ./${BITWARDEN_RS_FOLDER}/Dockerfile
     cd ./${BITWARDEN_RS_FOLDER}
-    heroku container:push web -a $APP_NAME
+    heroku container:push web -a "${APP_NAME}"
 
     echo "Now we can release the app which will publish it"
-    heroku container:release web -a $APP_NAME
+    heroku container:release web -a "${APP_NAME}"
+}
+
+function help {
+    printf "Welcome to help!\Use option -a for app name,\n-d <0/1> to enable duo,\n -g to set a git hash to clone bitwarden_rs from,\n and -t to specify if deployment or update!"
 }
 
 while getopts d:a:g:t: flag
@@ -69,20 +73,21 @@ do
         a) CREATE_APP_NAME=${OPTARG};;
         g) GIT_HASH=${OPTARG};;
         t) STRATEGY_TYPE=${OPTARG};;
+        *) HELP;;
     esac
 done
 echo "Enable Duo: $ENABLE_DUO";
 echo "Create App_Name: $CREATE_APP_NAME";
 echo "Git Hash: $GIT_HASH";
 
-git_clone $GIT_HASH
+git_clone "${GIT_HASH}"
 
-cd $SCRIPTPATH
+cd "${SCRIPTPATH}"
 
 echo "Heroku uses random ports for assignment with httpd services. We are modifying the ROCKET_PORT for startup."
 sed_files '2 a export ROCKET_PORT=$PORT\n' ./${BITWARDEN_RS_FOLDER}/docker/start.sh
 
-if [ $ENABLE_DUO -eq "1" ]
+if [ "${ENABLE_DUO}" -eq "1" ]
 then
     echo "In order to maintain Duo with presistence for those who run replicas and have Duo enable by default, we modify the default config (src/config.rs) to enable Duo by default."
     sed_files 's/_enable_duo:            bool,   true,   def,     false;/_enable_duo:            bool,   true,   def,     true;/g' ./${BITWARDEN_RS_FOLDER}/src/config.rs
@@ -101,9 +106,9 @@ EOF
 if [[ ${STRATEGY_TYPE} = "deploy" ]]
 then
     echo "Run Heroku bootstrapping for app and Dyno creations."
-    heroku_bootstrap $CREATE_APP_NAME
+    heroku_bootstrap "${CREATE_APP_NAME}"
 else
-    APP_NAME=$CREATE_APP_NAME
+    APP_NAME=${CREATE_APP_NAME}
 fi
 
 build_image
