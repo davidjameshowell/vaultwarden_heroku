@@ -19,16 +19,15 @@ Usage is simply, fast, and user friendly!
 ### Deployment
 
 1. Create a fork of this project
-2. Create a new `deploy` branch with current forked contents of `main` branch.
-3. Edit the `.github/workflows/main.yml` to enable/disable Duo and/or modify the checkout hash of bitwarden_rs upstream.
-4. Go to your forked repo Settings > Secrets and add secrets for:
+2. Edit the `.github/workflows/deploy.yml` to enable/disable Duo and/or modify the checkout hash of bitwarden_rs upstream.
+3. Go to your forked repo Settings > Secrets and add secrets for:
   * HEROKU_EMAIL (the email you used to sign up for Heroku)
   * HEROKU_API_KEY (yoru Heroku API key - can be found in **[Account Setings](https://dashboard.heroku.com/account)** -> APi Keys)
   * HEROKU_APP_NAME (the name of the Heroku application, this must be unqiue across Heroku and will fail if it is not)
-  * HEROKU_VERIFIED (if you have added a credit card on, your account will be verified to use built in addons, if not please see "NON VERIFIED ACCOUNTS" section)
-5. Commit and push your deploy branch back to your forked repo.
-6. Github Actions will run the job and begin deploying the app. This will take around 15 minutes.
-7. Congrats, you now having a fully functional Bitwarden_rs instance in Heroku!
+  * **HEROKU_VERIFIED (if you have added a credit card on, your account will be verified to use built in addons, if not please see "NON VERIFIED ACCOUNTS" section)**
+4. Go to the Actions tab, select the BitwardenRSOnHerokuAIO_Deploy job and wait!
+5. Github Actions will run the job and begin deploying the app. This will take around 15 minutes.
+6. Congrats, you now having a fully functional Bitwarden_rs instance in Heroku!
  
  ### Update
  
