@@ -106,7 +106,7 @@ do
         g) GIT_HASH=${OPTARG};;
         t) STRATEGY_TYPE=${OPTARG};;
         v) HEROKU_VERIFIED=${OPTARG};;
-        u) OFFSITE_HEROKU_DB=$(OPTARG)
+        u) OFFSITE_HEROKU_DB=${OPTARG};;
         *) HELP;;
     esac
 done
