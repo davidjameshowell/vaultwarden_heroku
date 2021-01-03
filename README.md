@@ -4,6 +4,8 @@ Deploy Bitwarden_rs in Heroku for free via Github1
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/bitwarden_rs_heroku/BitwardenRSOnHerokuAIO/deploy?label=Deploy%20Bitwarden_RS&style=for-the-badge)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/bitwarden_rs_heroku/BitwardenRSOnHerokuAIO/main?label=Update%20Bitwarden_RS&style=for-the-badge)
 
+[![CodeFactor](https://www.codefactor.io/repository/github/davidjameshowell/bitwarden_rs_heroku/badge)](https://www.codefactor.io/repository/github/davidjameshowell/bitwarden_rs_heroku)
+
 ## Features
 * Build and deploy cutomized Bitwarden_rs image from source to Heroku via Github actions
 * Add global Duo Security enablement for replica deployment as needed
@@ -23,6 +25,7 @@ Usage is simply, fast, and user friendly!
   * HEROKU_EMAIL (the email you used to sign up for Heroku)
   * HEROKU_API_KEY (yoru Heroku API key - can be found in **[Account Setings](https://dashboard.heroku.com/account)** -> APi Keys)
   * HEROKU_APP_NAME (the name of the Heroku application, this must be unqiue across Heroku and will fail if it is not)
+  * HEROKU_VERIFIED (if you have added a credit card on, your account will be verified to use built in addons, if not please see "NON VERIFIED ACCOUNTS" section)
 5. Commit and push your deploy branch back to your forked repo.
 6. Github Actions will run the job and begin deploying the app. This will take around 15 minutes.
 7. Congrats, you now having a fully functional Bitwarden_rs instance in Heroku!
@@ -34,6 +37,11 @@ Usage is simply, fast, and user friendly!
  * Making a commit to the main branch, forcing a Github Actions workflow to initiate
  
 Either one of these will force the Github Actions workflow to run and update the app. If you need to modify to enable/disable settings, you shoudl re run it as well.
+
+## Non Verified Heroku Accounts
+Non-verified Heroku accounts cannot use the built in Heroku addons, regardless if they are free or not. This just requires you to do a few more steps and use an outside resources. I have not personally vetted this service, but [FreeMySQLHosting](https://www.freemysqlhosting.net/) has free plans comparable to the JawsDB addon and should be sufficient for usage. It is suggested that regardless of whatever route you take, you take regular constructed backups of your Bitwarden Vault for safety. 
+
+Signup via the website above and navigate to the home page, select your home region for database ("Select where you would like you database located.") and then create database. It will list the server hostname and relevant details. The password will be emailed to you. You will need to add a new Github repository secret for "OFFSITE_HEROKU_DB" in the format of `mysql://USERNAME:PASSWORD@SERVER_HOSTNAME:SERVER_PORT/DATABASE_NAME`. If this field is not filled out properly, you will encounter issues and may be troublesome to debug. Verified users of Heroku benefit from having easier settup without issues.
 
 ## Why this was started
 In **[this issues request](https://github.com/dani-garcia/bitwarden_rs/issues/954)**, someone had inquired if it was possible to install Bitwarden_rs in Heroku. Unfortunately the dev team had not done this before and someone had tried but was unsccessful (due to port binding issues).

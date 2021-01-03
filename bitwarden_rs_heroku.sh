@@ -1,15 +1,17 @@
 #!/bin/bash 
 set -euo pipefail
 
-# Clean out any existing contents
-rm -rf ./bitwarden_rs
-
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 ENABLE_DUO=0
 CREATE_APP_NAME=" "
 GIT_HASH="master"
 BITWARDEN_RS_FOLDER="bitwarden_rs"
 STRATEGY_TYPE="deploy"
+HEROKU_VERIFIED=0
+OFFSITE_HEROKU_DB=" "
+
+# Clean out any existing contents
+rm -rf ./${BITWARDEN_RS_FOLDER}
 
 function git_clone {
     GIT_HASH=$1
@@ -34,13 +36,18 @@ function heroku_bootstrap {
     echo "We must create a Heroku application to deploy to first."
     APP_NAME=$(heroku create "${CREATE_APP_NAME}" --json | jq --raw-output '.name')
 
-    echo "We will use JawsDB Maria edition, which is free and sufficient for a small instance"
-    heroku addons:create jawsdb -a "$APP_NAME"
+    if [ "${HEROKU_VERIFIED}" -eq "1" ]
+    then
+        echo "We will use JawsDB Maria edition, which is free and sufficient for a small instance"
+        heroku addons:create jawsdb -a "$APP_NAME"
 
-    echo "Now we use the JAWS DB config as the database URL for Bitwarden"
-    echo "Supressing output due to sensitive nature."
-    heroku config:set DATABASE_URL="$(heroku config:get JAWSDB_URL -a "${APP_NAME}")" -a "${APP_NAME}" > /dev/null
-
+        echo "Now we use the JAWS DB config as the database URL for Bitwarden"
+        echo "Supressing output due to sensitive nature."
+        heroku config:set DATABASE_URL="$(heroku config:get JAWSDB_URL -a "${APP_NAME}")" -a "${APP_NAME}" > /dev/null
+    else
+        heroku config:set DATABASE_URL="${OFFSITE_HEROKU_DB}" -a "${APP_NAME}" > /dev/null
+    fi
+    
     echo "Additionally set an Admin Token too in the event additional options are needed."
     echo "Supressing output due to sensitive nature."
     heroku config:set ADMIN_TOKEN="$(openssl rand -base64 48)" -a "${APP_NAME}" > /dev/null
@@ -50,6 +57,19 @@ function heroku_bootstrap {
 }
 
 function build_image {
+    git_clone "${GIT_HASH}"
+
+    cd "${SCRIPTPATH}"
+
+    echo "Heroku uses random ports for assignment with httpd services. We are modifying the ROCKET_PORT for startup."
+    sed_files '2 a export ROCKET_PORT=$PORT\n' ./${BITWARDEN_RS_FOLDER}/docker/start.sh
+
+    if [ "${ENABLE_DUO}" -eq "1" ]
+    then
+        echo "In order to maintain Duo with presistence for those who run replicas and have Duo enable by default, we modify the default config (src/config.rs) to enable Duo by default."
+        sed_files 's/_enable_duo:            bool,   true,   def,     false;/_enable_duo:            bool,   true,   def,     true;/g' ./${BITWARDEN_RS_FOLDER}/src/config.rs
+    fi
+
     echo "Logging into Heroku Container Registry to push the image (this will add an entry in your Docker config)"
     heroku container:login
 
@@ -62,37 +82,7 @@ function build_image {
     heroku container:release web -a "${APP_NAME}"
 }
 
-function help {
-    printf "Welcome to help!\Use option -a for app name,\n-d <0/1> to enable duo,\n -g to set a git hash to clone bitwarden_rs from,\n and -t to specify if deployment or update!"
-}
-
-while getopts d:a:g:t: flag
-do
-    case "${flag}" in
-        d) ENABLE_DUO=${OPTARG};;
-        a) CREATE_APP_NAME=${OPTARG};;
-        g) GIT_HASH=${OPTARG};;
-        t) STRATEGY_TYPE=${OPTARG};;
-        *) HELP;;
-    esac
-done
-echo "Enable Duo: $ENABLE_DUO";
-echo "Create App_Name: $CREATE_APP_NAME";
-echo "Git Hash: $GIT_HASH";
-
-git_clone "${GIT_HASH}"
-
-cd "${SCRIPTPATH}"
-
-echo "Heroku uses random ports for assignment with httpd services. We are modifying the ROCKET_PORT for startup."
-sed_files '2 a export ROCKET_PORT=$PORT\n' ./${BITWARDEN_RS_FOLDER}/docker/start.sh
-
-if [ "${ENABLE_DUO}" -eq "1" ]
-then
-    echo "In order to maintain Duo with presistence for those who run replicas and have Duo enable by default, we modify the default config (src/config.rs) to enable Duo by default."
-    sed_files 's/_enable_duo:            bool,   true,   def,     false;/_enable_duo:            bool,   true,   def,     true;/g' ./${BITWARDEN_RS_FOLDER}/src/config.rs
-fi
-
+function login_heroku {
 echo "Modify netrc file to include Heroku details"
 cat >~/.netrc <<EOF
 machine api.heroku.com
@@ -102,14 +92,40 @@ machine git.heroku.com
     login ${HEROKU_EMAIL}
     password ${HEROKU_API_KEY}
 EOF
+}
+
+function help {
+    printf "Welcome to help!\Use option -a for app name,\n-d <0/1> to enable duo,\n -g to set a git hash to clone bitwarden_rs from,\n and -t to specify if deployment or update!"
+}
+
+while getopts d:a:g:t:v: flag
+do
+    case "${flag}" in
+        d) ENABLE_DUO=${OPTARG};;
+        a) CREATE_APP_NAME=${OPTARG};;
+        g) GIT_HASH=${OPTARG};;
+        t) STRATEGY_TYPE=${OPTARG};;
+        v) HEROKU_VERIFIED=${OPTARG};;
+        *) HELP;;
+    esac
+done
+echo "Enable Duo: $ENABLE_DUO";
+echo "Create App_Name: $CREATE_APP_NAME";
+echo "Git Hash: $GIT_HASH";
+echo "Heroku Verified: $HEROKU_VERIFIED";
 
 if [[ ${STRATEGY_TYPE} = "deploy" ]]
 then
     echo "Run Heroku bootstrapping for app and Dyno creations."
+    login_heroku
     heroku_bootstrap "${CREATE_APP_NAME}"
-else
+    build_image
+    echo "Congrats! Your new Bitwarden instance is ready to use! Head to Heroku, find the app, and use Open App to register!"
+elif [[ ${STRATEGY_TYPE} = "update" ]]
     APP_NAME=${CREATE_APP_NAME}
+    login_heroku
+    build_image
+else
+    echo "Unexpected workflow, failing build"
+    exit 1
 fi
-
-build_image
-echo "Congrats! Your new Bitwarden instance is ready to use! Head to Heroku, find the app, and use Open App to register!"

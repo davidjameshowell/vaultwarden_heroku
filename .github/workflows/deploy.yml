@@ -1,0 +1,29 @@
+name: BitwardenRSOnHeroku_Deploy
+
+on:
+  workflow_dispatch:
+
+env:
+  CREATE_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+  DUO_ENABLE: 1
+  GIT_HASH: master
+  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  HEROKU_VERIFIED: 1
+  OFFSITE_HEROKU_DB: ${{ secrets.OFFSITE_HEROKU_DB }}
+
+jobs:
+  create_and_deploy_app:
+    name: Create Bitwarden_rs app on Heroku, build, and deploy.
+    runs-on: ubuntu-latest
+    steps:
+    - uses: docker-practice/actions-setup-docker@master
+      with:
+        docker_channel: stable
+        # this value please see https://github.com/AkihiroSuda/moby-snapshot/releases
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - run: curl https://cli-assets.heroku.com/install.sh | sh
+    - run: sudo apt update && sudo apt install jq openssl -y
+    - run: bash bitwarden_rs_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -v $HEROKU_VERIFIED -t deploy
