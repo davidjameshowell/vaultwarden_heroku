@@ -122,6 +122,7 @@ then
     build_image
     echo "Congrats! Your new Bitwarden instance is ready to use! Head to Heroku, find the app, and use Open App to register!"
 elif [[ ${STRATEGY_TYPE} = "update" ]]
+then
     APP_NAME=${CREATE_APP_NAME}
     login_heroku
     build_image
