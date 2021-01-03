@@ -9,7 +9,7 @@ env:
   GIT_HASH: master
   HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-  HEROKU_VERIFIED: 0
+  HEROKU_VERIFIED: 1
   OFFSITE_HEROKU_DB: ${{ secrets.OFFSITE_HEROKU_DB }}
 
 jobs:
