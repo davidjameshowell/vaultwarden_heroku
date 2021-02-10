@@ -66,8 +66,8 @@ function build_image {
 
     if [ "${ENABLE_DUO}" -eq "1" ]
     then
-        echo "In order to maintain Duo with presistence for those who run replicas and have Duo enable by default, we modify the default config (src/config.rs) to enable Duo by default."
-        sed_files 's/_enable_duo:            bool,   true,   def,     false;/_enable_duo:            bool,   true,   def,     true;/g' ./${BITWARDEN_RS_FOLDER}/src/config.rs
+        # Thank you bryanjhv!
+        heroku config:set _ENABLE_DUO=true -a "${APP_NAME}"
     fi
 
     echo "Logging into Heroku Container Registry to push the image (this will add an entry in your Docker config)"
