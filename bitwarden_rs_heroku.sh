@@ -120,6 +120,7 @@ then
     echo "Run Heroku bootstrapping for app and Dyno creations."
     login_heroku
     heroku_bootstrap "${CREATE_APP_NAME}"
+    APP_NAME=${CREATE_APP_NAME}
     build_image
     echo "Congrats! Your new Bitwarden instance is ready to use! Head to Heroku, find the app, and use Open App to register!"
 elif [[ ${STRATEGY_TYPE} = "update" ]]
