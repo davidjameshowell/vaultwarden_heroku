@@ -46,7 +46,7 @@ function heroku_bootstrap {
         if [ "${ENABLE_AUTOBUS_BACKUP}" -eq "1" ]
         then
             echo "We will install AutoBus for database backup functionality now. AutoBus requires collaborator access to function."
-            heroku access:add user@email.com -a "$APP_NAME" --permissions operate
+            heroku access:add heroku@autobus.io -a "$APP_NAME" --permissions operate
             heroku addons:create autobus -a "$APP_NAME"
         fi
         
@@ -75,7 +75,7 @@ function check_addons {
         else
             echo "Autobus is not enabled, enabling."
             echo "We will install AutoBus for database backup functionality now. AutoBus requires collaborator access to function."
-            heroku access:add user@email.com -a "$APP_NAME" --permissions operate
+            heroku access:add heroku@autobus.io -a "$APP_NAME" --permissions operate
             heroku addons:create autobus -a "$APP_NAME"
         fi
     fi
