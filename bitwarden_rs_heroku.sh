@@ -82,18 +82,6 @@ function build_image {
     heroku container:release web -a "${APP_NAME}"
 }
 
-function login_heroku {
-echo "Modify netrc file to include Heroku details"
-cat >~/.netrc <<EOF
-machine api.heroku.com
-    login ${HEROKU_EMAIL}
-    password ${HEROKU_API_KEY}
-machine git.heroku.com
-    login ${HEROKU_EMAIL}
-    password ${HEROKU_API_KEY}
-EOF
-}
-
 function help {
     printf "Welcome to help!\Use option -a for app name,\n-d <0/1> to enable duo,\n -g to set a git hash to clone bitwarden_rs from,\n and -t to specify if deployment or update!"
 }
@@ -118,7 +106,6 @@ echo "Heroku Verified: $HEROKU_VERIFIED";
 if [[ ${STRATEGY_TYPE} = "deploy" ]]
 then
     echo "Run Heroku bootstrapping for app and Dyno creations."
-    login_heroku
     heroku_bootstrap "${CREATE_APP_NAME}"
     APP_NAME=${CREATE_APP_NAME}
     build_image
@@ -126,7 +113,6 @@ then
 elif [[ ${STRATEGY_TYPE} = "update" ]]
 then
     APP_NAME=${CREATE_APP_NAME}
-    login_heroku
     build_image
 else
     echo "Unexpected workflow, failing build"
