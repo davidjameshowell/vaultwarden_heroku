@@ -21,7 +21,6 @@ Usage is simply, fast, and user friendly!
 1. Create a fork of this project
 2. Edit the `.github/workflows/deploy.yml` to enable/disable Duo and/or modify the checkout hash of bitwarden_rs upstream.
 3. Go to your forked repo Settings > Secrets and add secrets for:
-  * HEROKU_EMAIL (the email you used to sign up for Heroku)
   * HEROKU_API_KEY (yoru Heroku API key - can be found in **[Account Setings](https://dashboard.heroku.com/account)** -> APi Keys)
   * HEROKU_APP_NAME (the name of the Heroku application, this must be unqiue across Heroku and will fail if it is not) [Value alphanumerical]
   * **HEROKU_VERIFIED (required regardless, if you have added a credit card on, your account will be verified to use built in addons, if not please see "NON VERIFIED ACCOUNTS" section)** [Value 0/1]
