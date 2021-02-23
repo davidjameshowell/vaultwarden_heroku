@@ -34,7 +34,7 @@ function heroku_bootstrap {
     heroku container:login
 
     echo "We must create a Heroku application to deploy to first."
-    APP_NAME=$(heroku create "${CREATE_APP_NAME}" --json | jq --raw-output '.name')
+    APP_NAME=$(heroku create "${CREATE_APP_NAME}" ${HEROKU_CREATE_OPTIONS} --json | jq --raw-output '.name')
 
     if [ "${HEROKU_VERIFIED}" -eq "1" ]
     then
