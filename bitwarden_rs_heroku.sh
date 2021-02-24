@@ -127,6 +127,7 @@ echo "Enable Duo: $ENABLE_DUO";
 echo "Create App_Name: $CREATE_APP_NAME";
 echo "Git Hash: $GIT_HASH";
 echo "Heroku Verified: $HEROKU_VERIFIED";
+echo "Enable Autobus Backup: $ENABLE_AUTOBUS_BACKUP";
 
 if [[ ${STRATEGY_TYPE} = "deploy" ]]
 then
