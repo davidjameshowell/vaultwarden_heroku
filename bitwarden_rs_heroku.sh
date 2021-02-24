@@ -43,12 +43,8 @@ function heroku_bootstrap {
         echo "We will use JawsDB Maria edition, which is free and sufficient for a small instance"
         heroku addons:create jawsdb -a "$APP_NAME"
         
-        if [ "${ENABLE_AUTOBUS_BACKUP}" -eq "1" ]
-        then
-            echo "We will install AutoBus for database backup functionality now. AutoBus requires collaborator access to function."
-            heroku access:add heroku@autobus.io -a "$APP_NAME" --permissions operate
-            heroku addons:create autobus -a "$APP_NAME"
-        fi
+        echo "Checking for additional addons"
+        check_addons
         
         echo "Now we use the JAWS DB config as the database URL for Bitwarden"
         echo "Supressing output due to sensitive nature."
@@ -67,16 +63,19 @@ function heroku_bootstrap {
 
 function check_addons {
 
-    # Check if Autobus is added
-    if [ "${ENABLE_AUTOBUS_BACKUP}" -eq "1" ]
+     if [ "${HEROKU_VERIFIED}" -eq "1" ]
     then
-        if (heroku addons -a "${APP_NAME}" | grep "autobus"); then
-            echo "Autobus is enabled, skipping."
-        else
-            echo "Autobus is not enabled, enabling."
-            echo "We will install AutoBus for database backup functionality now. AutoBus requires collaborator access to function."
-            heroku access:add heroku@autobus.io -a "$APP_NAME" --permissions operate
-            heroku addons:create autobus -a "$APP_NAME"
+        # Check if Autobus is added
+        if [ "${ENABLE_AUTOBUS_BACKUP}" -eq "1" ]
+        then
+            if (heroku addons -a "${APP_NAME}" | grep "autobus"); then
+                echo "Autobus is enabled, skipping."
+            else
+                echo "Autobus is not enabled, enabling."
+                echo "We will install AutoBus for database backup functionality now. AutoBus requires collaborator access to function."
+                heroku access:add heroku@autobus.io -a "$APP_NAME" --permissions operate
+                heroku addons:create autobus -a "$APP_NAME"
+            fi
         fi
     fi
 }
@@ -107,18 +106,6 @@ function build_image {
     heroku container:release web -a "${APP_NAME}"
 }
 
-function login_heroku {
-echo "Modify netrc file to include Heroku details"
-cat >~/.netrc <<EOF
-machine api.heroku.com
-    login ${HEROKU_EMAIL}
-    password ${HEROKU_API_KEY}
-machine git.heroku.com
-    login ${HEROKU_EMAIL}
-    password ${HEROKU_API_KEY}
-EOF
-}
-
 function help {
     printf "Welcome to help!\Use option -a for app name,\n-d <0/1> to enable duo,\n -g to set a git hash to clone bitwarden_rs from,\n and -t to specify if deployment or update!"
 }
@@ -127,7 +114,7 @@ while getopts d:a:g:t:v:u: flag
 do
     case "${flag}" in
         a) CREATE_APP_NAME=${OPTARG};;
-        d) ENABLE_AUTOBUS_BACKUP=${OPTARG};;
+        b) ENABLE_AUTOBUS_BACKUP=${OPTARG};;
         d) ENABLE_DUO=${OPTARG};;
         g) GIT_HASH=${OPTARG};;
         t) STRATEGY_TYPE=${OPTARG};;
@@ -144,7 +131,6 @@ echo "Heroku Verified: $HEROKU_VERIFIED";
 if [[ ${STRATEGY_TYPE} = "deploy" ]]
 then
     echo "Run Heroku bootstrapping for app and Dyno creations."
-    login_heroku
     heroku_bootstrap "${CREATE_APP_NAME}"
     APP_NAME=${CREATE_APP_NAME}
     build_image
@@ -152,7 +138,6 @@ then
 elif [[ ${STRATEGY_TYPE} = "update" ]]
 then
     APP_NAME=${CREATE_APP_NAME}
-    login_heroku
     check_addons
     build_image
 else

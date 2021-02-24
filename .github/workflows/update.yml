@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
 
 env:
+  AUTOBUS_ENABLE: 1
   CREATE_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
   DUO_ENABLE: 1
   GIT_HASH: master
-  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
 jobs:
@@ -26,4 +26,4 @@ jobs:
         fetch-depth: 1
     - run: curl https://cli-assets.heroku.com/install.sh | sh
     - run: sudo apt update && sudo apt install jq openssl -y
-    - run: bash bitwarden_rs_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -t update
+    - run: bash bitwarden_rs_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -b $AUTOBUS_ENABLE -t update
