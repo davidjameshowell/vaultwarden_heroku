@@ -110,7 +110,7 @@ function help {
     printf "Welcome to help!\Use option -a for app name,\n-d <0/1> to enable duo,\n -g to set a git hash to clone bitwarden_rs from,\n and -t to specify if deployment or update!"
 }
 
-while getopts d:a:g:t:v:u: flag
+while getopts a:b:d:g:t:u:v: flag
 do
     case "${flag}" in
         a) CREATE_APP_NAME=${OPTARG};;
