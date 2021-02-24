@@ -64,7 +64,7 @@ function heroku_bootstrap {
 function check_addons {
 
      if [ "${HEROKU_VERIFIED}" -eq "1" ]
-    then
+     then
         # Check if Autobus is added
         if [ "${ENABLE_AUTOBUS_BACKUP}" -eq "1" ]
         then
