@@ -14,7 +14,7 @@ Deploy Bitwarden_rs in Heroku for free via Github1
 
 ## Usage
 
-Usage is simply, fast, and user friendly!
+Usage is simple, fast, and user friendly!
 
 ### Deployment
 
