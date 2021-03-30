@@ -11,6 +11,14 @@ GIT_HASH="master"
 HEROKU_VERIFIED=0
 OFFSITE_HEROKU_DB=" "
 STRATEGY_TYPE="deploy"
+INTERNAL_SMTP=0
+EXTERNAL_SMTP=0
+EXTERNAL_SMTP_HOST=" "
+EXTERNAL_SMTP_FROM_EMAIL=" "
+EXTERNAL_SMTP_PORT=" '
+EXTERNAL_SMTP_SSL="true"
+EXTERNAL_STMP_USERNAME=" "
+EXTERNAL_STMP_PASSWORD=" "
 
 # Clean out any existing contents
 rm -rf ./${BITWARDEN_RS_FOLDER}
@@ -26,6 +34,22 @@ function git_clone {
 
 function sed_files {
     sed -i "$1" "$2"
+}
+
+function external_smtp {
+    if [ "${EXTERNAL_SMTP}" -eq "1" ]
+    then
+        heroku config:set SMTP_HOST="${EXTERNAL_SMTP_HOST}" SMTP_FROM="${EXTERNAL_SMTP_FROM_EMAIL}" SMTP_PORT="${EXTERNAL_SMTP_PORT}" SMTP_SSL="${EXTERNAL_SMTP_SSL}" SMTP_USERNAME="${EXTERNAL_SMTP_USERNAME}" SMTP_PASSWORD="${EXTERNAL_SMTP_PASSWORD}" -a "${APP_NAME}" > /dev/null
+    fi
+}
+
+function internal_smtp {
+    if [ "${INTERNAL_SMTP}" -eq "1" ]
+    then
+        printf "We will use MailGun Starter edition, which is free and sufficient for our SMTP purposes.\n"
+        heroku addons:create mailgun:starter -a "$APP_NAME"
+        heroku config:set SMTP_HOST="$(heroku config:get MAILGUN_SMTP_SERVER -a "${APP_NAME}")" SMTP_FROM="$(heroku config:get MAILGUN_SMTP_LOGIN -a "${APP_NAME}")" SMTP_PORT=465 SMTP_SSL=true SMTP_USERNAME="$(heroku config:get MAILGUN_SMTP_LOGIN -a "${APP_NAME}")" SMTP_PASSWORD="$(heroku config:get MAILGUN_SMTP_PASSWORD -a "${APP_NAME}")" -a "${APP_NAME}" > /dev/null
+    fi
 }
 
 function heroku_bootstrap {
@@ -49,8 +73,11 @@ function heroku_bootstrap {
         echo "Now we use the JAWS DB config as the database URL for Bitwarden"
         echo "Supressing output due to sensitive nature."
         heroku config:set DATABASE_URL="$(heroku config:get JAWSDB_URL -a "${APP_NAME}")" -a "${APP_NAME}" > /dev/null
+        
+        external_smtp
     else
         heroku config:set DATABASE_URL="${OFFSITE_HEROKU_DB}" -a "${APP_NAME}" > /dev/null
+        external_smtp
     fi
     
     echo "Additionally set an Admin Token too in the event additional options are needed."
