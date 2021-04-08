@@ -11,6 +11,7 @@ env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
   HEROKU_VERIFIED: 1
   OFFSITE_HEROKU_DB: ${{ secrets.OFFSITE_HEROKU_DB }}
+  HEROKU_CREATE_OPTIONS: ${{ secrets.HEROKU_CREATE_OPTIONS }}
 
 jobs:
   create_and_deploy_app:
