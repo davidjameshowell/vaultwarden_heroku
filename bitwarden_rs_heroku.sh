@@ -18,7 +18,7 @@ rm -rf ./${BITWARDEN_RS_FOLDER}
 function git_clone {
     GIT_HASH=$1
     echo "Clone current bitwarden_rs with depth 1"
-    git clone --depth 1 https://github.com/dani-garcia/bitwarden_rs.git
+    git clone --depth 1 https://github.com/dani-garcia/vaultwarden.git
     cd ./${BITWARDEN_RS_FOLDER}
     git checkout "${GIT_HASH}"
     cd ..
