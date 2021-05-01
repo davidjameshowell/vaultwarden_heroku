@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-BITWARDEN_RS_FOLDER="bitwarden_rs"
+BITWARDEN_RS_FOLDER="vaultwarden"
 CREATE_APP_NAME=" "
 ENABLE_AUTOBUS_BACKUP=0
 ENABLE_DUO=0
