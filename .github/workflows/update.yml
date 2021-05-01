@@ -9,7 +9,7 @@ env:
   AUTOBUS_ENABLE: 1
   CREATE_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
   DUO_ENABLE: 1
-  GIT_HASH: master
+  GIT_HASH: main
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
   HEROKU_VERIFIED: 1
 
