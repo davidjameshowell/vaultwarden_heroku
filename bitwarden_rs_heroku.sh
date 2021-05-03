@@ -3,11 +3,11 @@ set -euo pipefail
 
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-BITWARDEN_RS_FOLDER="bitwarden_rs"
+BITWARDEN_RS_FOLDER="vaultwarden"
 CREATE_APP_NAME=" "
 ENABLE_AUTOBUS_BACKUP=0
 ENABLE_DUO=0
-GIT_HASH="master"
+GIT_HASH="main"
 HEROKU_VERIFIED=0
 OFFSITE_HEROKU_DB=" "
 STRATEGY_TYPE="deploy"
@@ -18,7 +18,7 @@ rm -rf ./${BITWARDEN_RS_FOLDER}
 function git_clone {
     GIT_HASH=$1
     echo "Clone current bitwarden_rs with depth 1"
-    git clone --depth 1 https://github.com/dani-garcia/bitwarden_rs.git
+    git clone --depth 1 https://github.com/dani-garcia/vaultwarden.git
     cd ./${BITWARDEN_RS_FOLDER}
     git checkout "${GIT_HASH}"
     cd ..
