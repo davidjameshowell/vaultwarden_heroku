@@ -1,3 +1,5 @@
+**PLEASE NOTE ON 05/21/2021 THIS PROJECT WILL BE RENAMED IN ORDER TO STAY UP TO DATE WITH THE UPSTREAM SOFTWARE. THE NEW NAME WILL BE `vaultwarden_heroku` IN ORDER TO BE RENAMED WITH ORIGINAL PROJECT**
+
 # Bitwarden_rs on Heroku for Free!
 Deploy Bitwarden_rs in Heroku for free via Github1
 
