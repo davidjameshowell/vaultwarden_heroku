@@ -1,15 +1,15 @@
-**PLEASE NOTE ON 05/21/2021 THIS PROJECT WILL BE RENAMED IN ORDER TO STAY UP TO DATE WITH THE UPSTREAM SOFTWARE. THE NEW NAME WILL BE `vaultwarden_heroku` IN ORDER TO BE RENAMED WITH ORIGINAL PROJECT**
+**THIS PROJECT WAS RENAMED FROM BITWARDEN_RS_HEROKU TO VAULTWARDEN_HEROKU TO MATCH UPSTREAM PROJECT NAME**
 
-# Bitwarden_rs on Heroku for Free!
-Deploy Bitwarden_rs in Heroku for free via Github1
+# Vaultwarden on Heroku for Free!
+Deploy Vaultwarden in Heroku for free via Github1
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/bitwarden_rs_heroku/BitwardenRSOnHerokuAIO/deploy?label=Deploy%20Bitwarden_RS&style=for-the-badge)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/bitwarden_rs_heroku/BitwardenRSOnHerokuAIO/main?label=Update%20Bitwarden_RS&style=for-the-badge)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/vaultwarden_heroku/VaultwardenOnHerokuAIO/deploy?label=Deploy%20Vaultwarden&style=for-the-badge)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/vaultwarden_heroku/VaultwardenOnHerokuAIO/main?label=Update%20Vaultwarden&style=for-the-badge)
 
-[![CodeFactor](https://www.codefactor.io/repository/github/davidjameshowell/bitwarden_rs_heroku/badge)](https://www.codefactor.io/repository/github/davidjameshowell/bitwarden_rs_heroku)
+[![CodeFactor](https://www.codefactor.io/repository/github/davidjameshowell/vaultwarden_heroku/badge)](https://www.codefactor.io/repository/github/davidjameshowell/vaultwarden_heroku)
 
 ## Features
-* Build and deploy cutomized Bitwarden_rs image from source to Heroku via Github actions
+* Build and deploy cutomized Vaultwarden image from source to Heroku via Github actions
 * Add global Duo Security enablement for replica deployment as needed
 * Maintanable updates with Git Hash for future updates
 * Easily extendable for future tweaks
@@ -21,14 +21,14 @@ Usage is simple, fast, and user friendly!
 ### Deployment
 
 1. Create a fork of this project
-2. Edit the `.github/workflows/deploy.yml` to enable/disable Duo and/or modify the checkout hash of bitwarden_rs upstream.
+2. Edit the `.github/workflows/deploy.yml` to enable/disable Duo and/or modify the checkout hash of Vaultwarden upstream.
 3. Go to your forked repo Settings > Secrets and add secrets for:
   * HEROKU_API_KEY (yoru Heroku API key - can be found in **[Account Setings](https://dashboard.heroku.com/account)** -> APi Keys)
   * HEROKU_APP_NAME (the name of the Heroku application, this must be unqiue across Heroku and will fail if it is not) [Value alphanumerical]
   * **HEROKU_VERIFIED (required regardless, if you have added a credit card on, your account will be verified to use built in addons, if not please see "NON VERIFIED ACCOUNTS" section)** [Value 0/1]
 4. Go to the Actions tab, select the BitwardenRSOnHerokuAIO_Deploy job and wait!
 5. Github Actions will run the job and begin deploying the app. This will take around 15 minutes.
-6. Congrats, you now having a fully functional Bitwarden_rs instance in Heroku!
+6. Congrats, you now having a fully functional Vaultwarden instance in Heroku!
  
  ### Update
  
@@ -46,7 +46,7 @@ Another service that @mizzunet has found working is [freedb.tech](https://freedb
 Signup via the website above and navigate to the home page, select your home region for database ("Select where you would like you database located.") and then create database. It will list the server hostname and relevant details. The password will be emailed to you. You will need to add a new Github repository secret for "OFFSITE_HEROKU_DB" in the format of `mysql://USERNAME:PASSWORD@SERVER_HOSTNAME:SERVER_PORT/DATABASE_NAME`. If this field is not filled out properly, you will encounter issues and may be troublesome to debug. Verified users of Heroku benefit from having easier settup without issues. Additionally, you will need to modify `HEROKU_VERIFIED` to 0 in order to trigger the offsite DB env var.
 
 ## Why this was started
-In **[this issues request](https://github.com/dani-garcia/bitwarden_rs/issues/954)**, someone had inquired if it was possible to install Bitwarden_rs in Heroku. Unfortunately the dev team had not done this before and someone had tried but was unsccessful (due to port binding issues).
+In **[this issues request](https://github.com/dani-garcia/Vaultwarden/issues/954)**, someone had inquired if it was possible to install Vaultwarden in Heroku. Unfortunately the dev team had not done this before and someone had tried but was unsccessful (due to port binding issues).
 
 As my Bitwarden instance is a critical part of my daily workflow and part of acceptance from users in my group whom I need to share passwords with, high availability services are also an important part. I run a replica of Bitwarden on a cheap cloud server where I also take backups as well to S3, but seeing Heroku have a generous free tier, I was inclined to try this out!
 
