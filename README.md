@@ -3,8 +3,8 @@
 # Vaultwarden on Heroku for Free!
 Deploy Vaultwarden in Heroku for free via Github1
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/vaultwarden_heroku/VaultwardenOnHerokuAIO/deploy?label=Deploy%20Vaultwarden&style=for-the-badge)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/vaultwarden_heroku/VaultwardenOnHerokuAIO/main?label=Update%20Vaultwarden&style=for-the-badge)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/vaultwarden_heroku/VaultwardenOnHeroku_Deploy/main?label=Deploy%20Vaultwarden&style=for-the-badge)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/vaultwarden_heroku/VaultwardenOnHeroku_Update/main?label=Update%20Vaultwarden&style=for-the-badge)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/davidjameshowell/vaultwarden_heroku/badge)](https://www.codefactor.io/repository/github/davidjameshowell/vaultwarden_heroku)
 
