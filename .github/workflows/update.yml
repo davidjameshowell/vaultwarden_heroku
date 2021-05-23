@@ -1,4 +1,4 @@
-name: BitwardenRSOnHeroku_Update
+name: VaultwardenOnHeroku_Update
 
 on:
   push:
@@ -15,7 +15,7 @@ env:
 
 jobs:
   update_and_deploy:
-    name: Update Bitwarden_rs app (to latest version or SHA) on Heroku and deploy.
+    name: Update Vaultwarden app (to latest version or SHA) on Heroku and deploy.
     runs-on: ubuntu-latest
     steps:
     - uses: docker-practice/actions-setup-docker@master
@@ -27,4 +27,4 @@ jobs:
         fetch-depth: 1
     - run: curl https://cli-assets.heroku.com/install.sh | sh
     - run: sudo apt update && sudo apt install jq openssl -y
-    - run: bash bitwarden_rs_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -v $HEROKU_VERIFIED -b $AUTOBUS_ENABLE -t update
+    - run: bash vaultwarden_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -v $HEROKU_VERIFIED -b $AUTOBUS_ENABLE -t update

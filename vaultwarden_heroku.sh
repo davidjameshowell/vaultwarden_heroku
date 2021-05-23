@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-BITWARDEN_RS_FOLDER="vaultwarden"
+VAULTWARDEN_FOLDER="vaultwarden"
 CREATE_APP_NAME=" "
 ENABLE_AUTOBUS_BACKUP=0
 ENABLE_DUO=0
@@ -14,13 +14,13 @@ OFFSITE_HEROKU_DB=" "
 STRATEGY_TYPE="deploy"
 
 # Clean out any existing contents
-rm -rf ./${BITWARDEN_RS_FOLDER}
+rm -rf ./${VAULTWARDEN_FOLDER}
 
 function git_clone {
     GIT_HASH=$1
-    echo "Clone current bitwarden_rs with depth 1"
+    echo "Clone current Vaultwarden with depth 1"
     git clone --depth 1 https://github.com/dani-garcia/vaultwarden.git
-    cd ./${BITWARDEN_RS_FOLDER}
+    cd ./${VAULTWARDEN_FOLDER}
     git checkout "${GIT_HASH}"
     cd ..
 }
@@ -96,7 +96,7 @@ function build_image {
     cd "${SCRIPTPATH}"
 
     echo "Heroku uses random ports for assignment with httpd services. We are modifying the ROCKET_PORT for startup."
-    sed_files '2 a export ROCKET_PORT=$PORT\n' ./${BITWARDEN_RS_FOLDER}/docker/start.sh
+    sed_files '2 a export ROCKET_PORT=$PORT\n' ./${VAULTWARDEN_FOLDER}/docker/start.sh
 
     if [ "${ENABLE_DUO}" -eq "1" ]
     then
@@ -108,8 +108,8 @@ function build_image {
     heroku container:login
 
     echo "Now we will build the amd64 image to deploy to Heroku with the specified port changes"
-    mv ./${BITWARDEN_RS_FOLDER}/docker/amd64/Dockerfile ./${BITWARDEN_RS_FOLDER}/Dockerfile
-    cd ./${BITWARDEN_RS_FOLDER}
+    mv ./${VAULTWARDEN_FOLDER}/docker/amd64/Dockerfile ./${VAULTWARDEN_FOLDER}/Dockerfile
+    cd ./${VAULTWARDEN_FOLDER}
     heroku container:push web -a "${APP_NAME}"
 
     echo "Now we can release the app which will publish it"
@@ -117,7 +117,7 @@ function build_image {
 }
 
 function help {
-    printf "Welcome to help!\Use option -a for app name,\n-d <0/1> to enable duo,\n -g to set a git hash to clone bitwarden_rs from,\n and -t to specify if deployment or update!"
+    printf "Welcome to help!\Use option -a for app name,\n-d <0/1> to enable duo,\n -g to set a git hash to clone Vaultwarden from,\n and -t to specify if deployment or update!"
 }
 
 while getopts a:b:d:g:p:t:u:v: flag

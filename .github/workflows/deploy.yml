@@ -1,4 +1,4 @@
-name: BitwardenRSOnHeroku_Deploy
+name: VaultwardenOnnHeroku_Deploy
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ env:
 
 jobs:
   create_and_deploy_app:
-    name: Create Bitwarden_rs app on Heroku, build, and deploy.
+    name: Create Vaultwarden app on Heroku, build, and deploy.
     runs-on: ubuntu-latest
     steps:
     - uses: docker-practice/actions-setup-docker@master
@@ -28,4 +28,4 @@ jobs:
         fetch-depth: 1
     - run: curl https://cli-assets.heroku.com/install.sh | sh
     - run: sudo apt update && sudo apt install jq openssl -y
-    - run: bash bitwarden_rs_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -p $USE_PSQL -v $HEROKU_VERIFIED -u ${OFFSITE_HEROKU_DB:-' '} -b $AUTOBUS_ENABLE -t deploy
+    - run: bash vaultwarden_heroku.sh -a $CREATE_APP_NAME -d $DUO_ENABLE -g $GIT_HASH -p $USE_PSQL -v $HEROKU_VERIFIED -u ${OFFSITE_HEROKU_DB:-' '} -b $AUTOBUS_ENABLE -t deploy
