@@ -1,7 +1,7 @@
 **THIS PROJECT WAS RENAMED FROM BITWARDEN_RS_HEROKU TO VAULTWARDEN_HEROKU TO MATCH UPSTREAM PROJECT NAME**
 
 # Vaultwarden on Heroku for Free!
-Deploy Vaultwarden in Heroku for free via Github1
+Deploy Vaultwarden in Heroku for free via Github
 
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/vaultwarden_heroku/VaultwardenOnHeroku_Deploy/main?label=Deploy%20Vaultwarden&style=for-the-badge)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/davidjameshowell/vaultwarden_heroku/VaultwardenOnHeroku_Update/main?label=Update%20Vaultwarden&style=for-the-badge)
@@ -36,7 +36,7 @@ Usage is simple, fast, and user friendly!
  * Running the workflow manually via Github Actions
  * Making a commit to the main branch, forcing a Github Actions workflow to initiate
  
-Either one of these will force the Github Actions workflow to run and update the app. If you need to modify to enable/disable settings, you shoudl re run it as well.
+Either one of these will force the Github Actions workflow to run and update the app. If you need to modify to enable/disable settings, you should re run it as well.
 
 ## Non Verified Heroku Accounts
 Non-verified Heroku accounts cannot use the built in Heroku addons, regardless if they are free or not. This just requires you to do a few more steps and use an outside resources. I have not personally vetted this service, but [FreeMySQLHosting](https://www.freemysqlhosting.net/) has free plans comparable to the JawsDB addon and should be sufficient for usage. It is suggested that regardless of whatever route you take, you take regular constructed backups of your Bitwarden Vault for safety. 
