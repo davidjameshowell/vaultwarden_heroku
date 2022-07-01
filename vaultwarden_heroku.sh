@@ -69,6 +69,7 @@ function heroku_bootstrap {
     echo "And set DB connections to seven in order not to saturate the free DB"
     heroku config:set DATABASE_MAX_CONNS=7 -a "${APP_NAME}"
     heroku config:set DOMAIN="https://${APP_NAME}.herokuapp.com" -a "${APP_NAME}"
+ 
 }
 
 function check_addons {
@@ -102,6 +103,12 @@ function build_image {
     then
         # Thank you bryanjhv!
         heroku config:set _ENABLE_DUO=true -a "${APP_NAME}"
+    fi
+
+    # bypass persistent volume check: https://github.com/dani-garcia/vaultwarden/pull/2501
+    if [[ `heroku config:get I_REALLY_WANT_VOLATILE_STORAGE -a "${APP_NAME}"` != "true"  ]]
+    then
+        heroku config:set I_REALLY_WANT_VOLATILE_STORAGE=true -a "${APP_NAME}"
     fi
 
     echo "Logging into Heroku Container Registry to push the image (this will add an entry in your Docker config)"
